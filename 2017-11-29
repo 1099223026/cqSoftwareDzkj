@@ -1,0 +1,21 @@
+1、毕业替代材料提交
+2、搭建git环境，上传本地项目
+3、修剪公司yii框架
+    actions：各个controller的公共方法
+    scenarios：场景，对字段进行校验提示用户（和ruls配合使用）
+    attributeLabels：指定对应字段的中文
+    behaviors：控制访问权限（VerbFilter指定CRUD动作所允许的请求方式）
+4、访问gii,地址http://dzbase.local/gii
+5、根据gii自动生成代码（新标上线增删改查草码）
+    question：
+        在crud生成代码的时候填BidController，在公司框架中会出现错误->在
+        left.php中定义了菜单和控制器的绑定后，菜单无法访问控制器，
+    分析：
+        1、或许是gii对controller字符有要求；->排除，如果yii对字符有要求,那
+        么会给出相应的提示，并且也不会生成出BidController。
+        2、或许是公司框架对controller字符有要求。
+6、构思yii接口访问授权
+    目的：某些接口只能我们后台调用；某些接口用户是不可调用的（普通用户调用会
+        员的接口），
+    构思：用户登录后有个token，对token进行加密处理，后台判断用户是否具备调用该接
+        口的权限，url后面每次都要有token=**。
