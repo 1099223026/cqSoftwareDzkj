@@ -1,4 +1,4 @@
-1、postman google接口测试环境搭建
+﻿1、postman google接口测试环境搭建
 2、交易订单接口实现，gii自动生成后修改接口
     question：
             每次gii生成的代码，在left里面配置后，他会默认访问
@@ -17,5 +17,7 @@
         $connection = \Yii::$app->db;
         $connection->createCommand()->insert('gr_trans_order', $data )->execute();
 
+
+3、谈谈我今天的感触：今天一整天都在配置wamp3+php7、phpstudy+php7 64bit，直到现在我都还没有配好，刚刚看到一个名为“极为”的一篇博客，我找到了我想要的答案，我感觉到我这次一定会成功的，进去看了博主的主页，比我的博客好很多，界面很好看，给人一种很清新的感觉，当初我在设计自己博客的时候也有过要这样设计，只是做着做着就当做一个任务来完成，为什么我一定要当做任务来做，我明明很热爱呀，可我偏偏越来越敷衍我自己，我对我所做的事务没用心，我没用心，心凉                    
 
 查看bmodel和model在yii2中的区别

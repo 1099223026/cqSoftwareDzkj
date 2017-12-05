@@ -1,0 +1,70 @@
+1、完成在wampserver中对php7.1 64bit 搭建
+2、交易查询实现
+	gr_trans_detail（交易明细表）：
+		id	交易明细id
+		bid_id	标id
+		buy_order_id	交易买方订单id
+		sell_order_id	交易卖方订单id
+		price	交易价格
+		buy_price	交易买价格
+		sell_price	交易卖价格
+		amount	交易数量
+		trans_time	交易时间
+	gr_trans_order（交易订单表）：
+		id 	交易订单id
+		user_id	 用户id
+		bid_id 	标id
+		type 	交易类型，1 买，2 卖
+		entrust_price 	委托交易价格
+		entrust_amount 	委托交易数量
+		entrust_time 	委托时间
+		trans_amount 	已成交交易数量
+		trans_last_time		最后一次成交时间
+		trans_status 	交易状态，0 未交易，1 部分交易成功，2 完全交易成功
+		order_status 	订单状态，0 委托中，1 已完成，2 撤销中，3 已撤销
+		cancel_time 	撤销时间
+		clear_status 	清算状态，0 未清算，1 已清算
+		clear_time 		清算时间
+		create_time 	添加时间
+		update_time 	修改时间
+	目前只是单独查询两张表的数据
+	在调用接口的同时，需要验证用户是否有权限调用该接口，可以统一写在 beforeAction 中
+3、用户入金 接口 + 事务
+	涉及到的数据表
+		gr_cash_detail（现金明细表）：2
+			id   现金明细ID
+			user_id   用户ID
+			type   类型，1 充值，2 提现，3 交易买卖，4 交易撤销，5 手续费，6 手续费分润
+			relate_table   类型关联表
+			relate_id   类型关联表数据ID
+			init_money  增减前的初始金额
+			money  增减金额
+			remark  备注
+			create_time  添加时间
+		gr_cash_in_out（现金出入表）：1
+			id  记录ID
+			user_id  用户ID
+			type  类型，1 充值，2 提现
+			money  增减金额
+			bank_name  银行名称
+			bank_account  银行账号
+			status  状态，0 待确认，1 操作成功，2 操作失败
+			create_time  添加时间
+			update_time  修改时间
+		gr_user（用户信息表）：3
+			id  用户ID
+			invite_user_id  邀请人用户ID
+			username  用户名
+			password  密码
+			tel  手机
+			fund  账户基金
+			cash  账户现金
+			last_login_ip  最后登录IP
+			last_login_time  最后登录时间
+			create_time  添加时间
+			update_time  修改时间
+		mysql尝试写入金事务
+
+
+
+	
