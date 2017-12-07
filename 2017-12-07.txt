@@ -1,0 +1,18 @@
+1、下载 Google 美化标签页插件 Momentum
+2、交易请求撮合处理实现--完善
+3、静态方法调用静态属性用self::
+4、yii2中的更新操作  ActiveRecord
+	// 更新用户金额
+                $user = new User();
+                $user->updateAll(
+                    array( 'cash'=>$user_cash, 'update_time' => $post[ 'update_time' ] ),
+                    'id=:id',
+                    array(':id'=>$post[ 'user_id' ] )
+                );
+5、切记用户端传过来的数据至关重要，一定要过滤好
+6、上传代码到coding
+7、理解依赖注入
+8、在PHPstorm中需要注意的东西在注释线后面介绍 todo
+9、根据公司的规范来修改自己所写的代码
+    在model中利用setAttributes放马来填充数据，注意：如果在modelA中的rules方法中没有列出相应的字段，这个setArributes方法不会和数据库中的字段对应起来的
+    -先修改btransorder文件
