@@ -1,0 +1,5 @@
+1、将现有代码中涉及到yii1和php7语法一下的，都统一改为yii2 +php7 语法
+2、查看yii2源码----connection.php
+3、在新的coding地址下载（初始框架）代码，并在本机配置成功
+4、gii 生成的时候，dzmodel没有
+5、框架结构
