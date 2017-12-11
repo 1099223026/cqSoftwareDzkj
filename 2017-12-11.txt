@@ -1,0 +1,22 @@
+1、api 目录 D:\wamp64\www\new_dz_base\projects\common\modules\api
+2、初级 php 工程师应该具备的能力
+	熟悉标准SQL和数据库设计，具备mysql数据库设计和性能优化经验
+	熟悉xml、xhtml的应用,熟悉webservice的客户端和服务端开发
+	了解关系型数据库，具备sql调优能力，了解nosql优先；
+	端对端--web一系列流程（从浏览器--到服务器）
+	精通设计模式 ，精通微信开发，精通angular2 | angular4；
+	熟悉HTTP相关知识,能够熟练构建webservice的客户端和服务端
+	自动化工具使用webpack
+	相关资源网址：
+		浏览器与服务器交互
+			https://www.cnblogs.com/lyc-smile/p/5111606.html
+			http://blog.csdn.net/ziyifengfei/article/details/8183262
+
+3、--工作--将现有的代码移植到新的框架中
+4、状态跳转码-1未登录、0成功、1失败
+5、PHPstorm选择多个相同的单体 alt+j
+6、使用gii自动生成“新标上线”
+7、熟悉yii2高级框架中的定时计划任务
+8、当save返回的id等于0 那么就抛出一个异常给事务
+9、对之前封装的事务进行修改
+9、明日工作--将BUserAmountInOut封装在service层
