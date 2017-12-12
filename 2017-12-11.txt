@@ -19,4 +19,4 @@
 7、熟悉yii2高级框架中的定时计划任务
 8、当save返回的id等于0 那么就抛出一个异常给事务
 9、对之前封装的事务进行修改
-9、明日工作--将BUserAmountInOut封装在service层
+10、明日工作--将BUserAmountInOut封装在service层
