@@ -1,0 +1,66 @@
+1、将gii生成的代码进行修改
+	修改标的增删改查
+	将gii自动生成的默认分页记录条数进行修改：
+		在各个searchModel中的search方法中添加
+			'pagination' => [
+                'pageSize' => 10,
+            ]
+    将status(0,1,2)修改(下架，1 正常交易，2 暂停交易),在视图文件中：
+	    <?php echo GridView::widget([
+	        'dataProvider' => $dataProvider,
+	        'options' => ['class' => 'grid-view table-responsive'],
+	        'columns' => [
+	            ['class' => 'yii\grid\SerialColumn'],
+	//            'id',
+	            'title',
+	            'summary:ntext',
+	            [
+	                    'attribute' => 'status',
+	                    'format' => 'html',
+	                    'filter' => false,
+	                    'value' => function($data) {
+	                        if ($data->status > 1) {return '暂停交易';}
+	                        if ($data->status > 0) {return '正常交易';}
+	                        return '下架';
+	                    }
+	            ],
+	            'sort',
+	             'create_time:datetime',
+	             'update_time:datetime',
+
+	            ['class' => 'yii\grid\ActionColumn'],
+	        ],
+	    ]); ?>
+	对用户入金流水进行修改
+		修改按钮：
+		 [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '{user-view} {user-update} {user-delete}',
+        ],
+
+       	gii自动生成，配置多表连接查询，并支持搜索：
+       		博文地址：http://www.yiichina.com/tutorial/832
+       		在本表（cash_detail），普通Model中添加方法
+       			// 获取入金流水所属用户
+			    public function getUser()
+			    {
+			        return $this->hasOne(User::className(), ['id' => 'user_id']);
+			    }
+			在searchmodel中添加
+				全局变量 public $username;
+				rules（）中添加['username', 'safe'],
+				search函数中：
+					 $query = BCashDetail::find()
+			            ->orderBy(['id'=>SORT_DESC])
+			            ->where(['type' => 1])
+			            ->joinWith(['user'])
+			            ->select("gr_cash_detail.*, gr_user.username");
+			    	$query->andFilterWhere(['like', 'gr_user.username', $this->username]);
+			    index视图文件：
+			    	[
+		                'attribute' => 'username',
+		                'value' => 'user.username',
+		                'label' => '用户名',
+		            ],
+
+

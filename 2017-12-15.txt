@@ -1,0 +1,35 @@
+1、在searchModel中的search方法，去掉->orderBy(['id'=>SORT_DESC])，即可点击标题自动排序，也可以修改gii自动生成的文件
+2、修改gii自动生成search配置文件，目录：projects/admin/gii/adminlte/crud/default/search.php,目的：将生成的文件可以点击标题排序，并分页是10条记录
+3、测试h5接口是否能访问
+4、h5接口中文乱码，解决：json_encode 时配置JSON_UNESCAPED_UNICODE即可
+5、接口传值到web端，如何格式化数据，是自己提取数据foreach 还是有自带的方法
+	解决方案：
+		适合多条数据
+		/**
+	     * FunctionInfo: 將查詢結果轉換為數組
+	     */
+	    function simplifyData($data){
+	        foreach($data as $key=>$val){
+	            $newData[$key] = $val->attributes;
+	        }
+	        return $newData;
+	    }
+
+	    返回一条结果的时候直接用 $post->attributes; 
+6、写随机数，要求：
+	每个月执行一次
+	1-50之间
+	步骤：
+		先在本地写好view；
+		本地页面加载时，请求服务器上的时间，如果时当月15号，并且数据库中最后一条记录不是今天生成的，就将view展示出来；
+		数据库新建随机红包表：
+			id   ip  (address) status(1张，2向)   is_send_email  money  create_time（具体年月日-十分秒）；
+		当数据库中指定表生成新记录时发送邮件到管理员
+		步骤：
+			Linux计划任务每个月15号执行shell脚本
+			shell调用mysql查询红包表是否存在当月15号的信息，是发送邮件
+			将is_send_email字段置为1
+
+			第二种解决方案：就是在mysql触发器里面调用shell脚本
+			shell脚本里面负责发送邮件，并将is_send_email字段置为1
+7、新标上线修改、添加所有用户信息			
