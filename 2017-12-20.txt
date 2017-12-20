@@ -1,0 +1,24 @@
+**提要：18/19号已经请假
+1、对新标上线、成功订单、委托订单、用户资金流水、用户管理等后台管理系统相关菜单进行完善并实现增删改查
+2、数据库中修改了bank_name 为bank_id
+3、用户入金提现的申请
+	需要事务修改三张表
+4、配置本地域名h5.gr_app.local
+5、测试函数
+	public function actionT()
+	{
+	    $admin = new AdminUser();
+	    echo $admin->getId();
+	}
+6、生成文章的crud
+7、修改gii controller生成文件
+-----加班
+8、交易标发布crud
+9、安装composer，利用它安装时间日期控件
+10、创建Google账号
+11、 "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
