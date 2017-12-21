@@ -1,0 +1,132 @@
+1、遗留问题
+	1》新标发布的开始时间和结束时间尚未完善；
+	2》文章上传图片未完成；
+2、用户实名认证crud
+3、用户银行账户审核crud
+4、解决第一个遗留问题
+
+***********注，该控件已经自己封装成功，并附在 DateTimeWidget 文件夹中，其中_form.php是演示如何使用的、
+
+	---自定义日期时间Widget控件，步骤：
+	1》在common\widgets中添加widget类，类似：
+		<?php
+		/**
+		 * Created by PhpStorm.
+		 * User: zhangyawei-mac
+		 * Date: 16/8/25
+		 * Time: 上午11:23
+		 */
+
+		namespace common\widgets;
+
+
+		class RichEditorWidget extends FormWidget{
+
+		    public function init() {
+		        parent::init();
+
+		        $this->id = rand(1, 99999) . time();
+		    }
+
+
+		    public function run() {
+		        return $this->render('rich_editor');
+		    }
+
+		}
+
+	2》自定义formwidget类，添加需要的属性，类似：
+		<?php
+		/**
+		 * Created by PhpStorm.
+		 * User: zhangyawei-mac
+		 * Date: 16/8/25
+		 * Time: 下午12:05
+		 */
+		namespace common\widgets;
+		use yii\base\Widget;
+		class FormWidget extends Widget{
+
+		    public $titleLen = 1;
+		    public $contentLen = 3;
+		    public $title = '';
+		    public $name = '';
+		    public $type = '';
+		    public $value = '';
+		    public $unit = '';
+		    public $validation = '';
+		    public $class = '';
+		    public $context = 'default';
+		    public $content = '';
+		    public $id = null;
+		    public $requireValidation = false;
+
+		    public function init() {
+			    parent::init();
+			    $this->id = md5($this->title . $this->name);
+		    }
+		}
+		
+	3》编辑rich_editor视图文件common/widgets/rich_editor.php，添加需要展示的内容
+
+	问题：
+		》
+		在input标签前加图标：
+		 <?php echo $form->field($this->context->model, 'start_time', [
+                'template' => '{input}<span style="height: 35px;width: 28px;" class="add-on"><i class="icon-th" style="margin-top: 5px;"></i></span>',
+            ])
+                ->textInput(['maxlength' => true,'readonly' => 'readonly','style'=>'border-radius:0;width: 160px;'])
+                ->label(false);
+            ?>
+
+        》
+        不能有两个form嵌套，否则无法提交
+        	将form通过在FormWidget中创建变量，并传值
+
+        》
+        不能覆盖form中的template，否则无法给错
+	         <?php $form = ActiveForm::begin([
+		        'options'=>[
+		            'class '=>'form-horizontal'
+		        ],
+		        'fieldConfig' => [
+		            'template' => "{label}\n<div class=\"col-sm-7\">{input}</div>\n<div class=\"col-sm-3\" >{error}</div>",
+		            'labelOptions' => ['class' => 'col-sm-2 control-label'],  //修改label的样式
+		        ],
+	    	]); ?>
+
+	    	》
+	    	文中的template是内容加载的架构，如果想在input前加上图标，那么可以form的和field的template进行拼装：
+	    		'template' => "{label}\n<div class=\"col-sm-7\"><div class=\"input-append date form_datetime\">{input}<span style=\"height: 35px;width: 28px;\" class=\"add-on\"><i class=\"icon-th\" style=\"margin-top: 5px;\"></i></span></div></div>\n<div class=\"col-sm-3\" >{error}</div>"
+
+	    	》
+	    	开始时间和结束时间进行对比：
+	    		['start_time', 'compare', 'compareAttribute' => 'end_time', 'operator' => '>']
+
+	    	》
+	    	修改日期时间控件为中文
+	    		导入样式：
+	    			<link href="/static/datePicker/bootstrap-combined.min.css" rel="stylesheet">
+					<link rel="stylesheet" type="text/css" media="screen" href="/static/datePicker/bootstrap-datetimepicker.min.css">
+					<script type="text/javascript" src="/static/datePicker/bootstrap-datetimepicker.min.js"></script>
+					<script type="text/javascript" src="/static/datePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+				写js:
+					 $(".form_datetime").datetimepicker({
+				        language: 'zh-CN',
+				        format: "yyyy-MM-dd hh:mm:ss",
+				        autoclose: true,
+				        todayBtn: true,
+				        pickerPosition: "bottom-left"
+				    });
+
+
+
+
+
+
+
+
+
+
+
+
