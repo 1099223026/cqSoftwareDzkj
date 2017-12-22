@@ -1,0 +1,59 @@
+------今日工作总览，写h5接口
+1、委托管理接口
+	》需要字段
+	    'bid_id'
+	    'type'
+	    'entrust_price'
+	    'entrust_amount'
+	    'entrust_time'
+	    'trans_amount'
+	    'trans_status'
+	    'order_status'
+	    'cancel_apply_time'
+	    'cancel_validate_time'
+
+2、交易查询接口
+	》需要字段
+		 'id'
+         'bid_id'
+         'buy_order_id'
+         'sell_order_id'
+         'price'
+         'buy_price'
+         'sell_price'
+         'amount'
+         'trans_time'
+
+3、充值接口
+	'id'
+    'money'
+    'remark'
+    'status'
+    'oprate_time'
+    'create_time'
+4、提现接口
+5、用户金额接口
+6、提现记录列表接口
+7、充值记录列表接口
+8、交易标列列表接口
+9、订单状态接口
+10、交易类型接口
+11、充值方式接口
+12、用户充值提现接口需要重构
+	---h5提交申请，后台事务处理
+13、详情页归纳接口
+	获取所有标（id,title）
+	我-买标
+	我-卖标
+	我-撤销订单
+	我-买卖标成交记录
+	我-委托中的标
+	我-持仓
+
+	所有-委托中的标
+
+	当日-最高价
+	当日-最低价
+	当日-涨跌比
+	当日-成交量
+*************注意：后台提现、充值、实名认证审核加一个审核失败
