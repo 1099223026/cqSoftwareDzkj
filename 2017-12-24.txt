@@ -1,0 +1,16 @@
+1、修改昨天的sql语句
+	SELECT
+	* 
+	FROM
+		gr_trans_detail AS detail 
+	WHERE
+		buy_order_id in ( SELECT id FROM gr_trans_order WHERE user_id = 36 ) 
+		OR sell_order_id in ( SELECT id FROM gr_trans_order WHERE user_id = 36 );
+	将等于改为in，因为里面的查询会返回多个值
+2、清理接口中残余的参数
+3、个人成交记录接口完善
+		--------------注意：该接口是写的原生sql语句子查询，包括分页
+4、对后台审核功能进行再次修改与排错
+5、查看用户接口中所有return中的code状态
+6、详情页买入卖出接口	
+	用户买入已经写好，卖出待完善---写好了，只是还没有测试

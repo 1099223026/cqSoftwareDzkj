@@ -1,0 +1,31 @@
+1、修改现金出入、实名认证、用户银行账号审核状态
+2、若需要计算的到的数据，封装成方法（例如：盈亏比）
+3、写接口，详情页
+	个人成交记录
+		》
+		根据用户id查询到该用户对应的订单id，
+		根据订单id去明细表查买家订单id或买家订单id
+		最后展示数据时，若买家等于用户id那么类型就是买，反之亦然。
+		关联表查询和子查询比较，倘若查询结果只需要返回一张表的数据，那么用子查询较好，反之同理。
+		子查询sql语句：
+			SELECT
+				* 
+			FROM
+				gr_trans_detail AS detail 
+			WHERE
+				buy_order_id = ( SELECT id FROM gr_trans_order WHERE user_id = 3 ) 
+				OR sell_order_id = ( SELECT id FROM gr_trans_order WHERE user_id = 3 );
+		字段：
+			'id'
+            'bid_id'
+            'buy_order_id'
+            'sell_order_id'
+            'price'
+            'amount'
+            'trans_time'
+4、数据库新增字段，修改用户出入金逻辑
+*****************注一：需要修改bmodel中的返回值样式，
+充值失败还有问题
+充值返回银行卡列表
+改为对象
+
