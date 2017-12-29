@@ -1,0 +1,65 @@
+1、后台管理员现金出入的金额显示绝对值，修改增减金额名字为金额
+2、后台管理增加新标认购栏
+3、写k线图接口
+	成交量、时间
+
+
+4、成本计算
+ // TODO:成本计算待完善
+    public static function countHoldPositionCost($userId, $bid)
+    {
+        $conn = \Yii::$app->db;
+        // 获得买记录总额
+        $sql = "SELECT price*amount as buyTotal FROM gr_trans_detail  WHERE "
+            ."buy_order_id in ( SELECT id FROM gr_trans_order WHERE user_id = $userId and bid_id=$bid and type=".BTransOrder::$TYPE_BUY.") "
+            ."OR sell_order_id in ( SELECT id FROM gr_trans_order WHERE user_id = $userId and bid_id=$bid and type=".BTransOrder::$TYPE_BUY.");";
+        $command = $conn->createCommand($sql);
+        $buyRes = $command->queryAll();
+        $buySum = 0;
+        foreach ($buyRes as $key => $val) {
+            $buySum += $val['buyTotal'];
+        }
+
+        // 获得卖出记录总额
+        $sql = "SELECT price*amount as sellTotal FROM gr_trans_detail  WHERE "
+            ."buy_order_id in ( SELECT id FROM gr_trans_order WHERE user_id = $userId and bid_id=$bid and type=".BTransOrder::$TYPE_SELL.") "
+            ."OR sell_order_id in ( SELECT id FROM gr_trans_order WHERE user_id = $userId and bid_id=$bid and type=".BTransOrder::$TYPE_SELL.");";
+        $command = $conn->createCommand($sql);
+        $sellRes = $command->queryAll();
+        $sellSum = 0;
+        foreach ($sellRes as $key => $val) {
+            $sellSum += $val['sellTotal'];
+        }
+
+        // 获取持仓数量
+        $amount = BUserBid::getUserBidAmount($userId, $bid);
+        $holdPosition = ($buySum - $sellSum) / $amount;
+
+        return $holdPosition;
+    }
+
+
+
+
+
+
+    
+
+    //TODO :以下暂未使用
+    /**
+     * @return string
+     * InterfaceInfo：计算开盘价格
+     */
+    public function actionCountOpenPrice(){
+        // 计算开盘价格
+        $res = BTransDetail::countOpenPrice();
+
+        $status = 1;
+        // 没有数据
+        if (!empty($res)) {
+            $status = 0;
+        }
+        // 將查詢結果轉為數組
+        $res = $this->simplifyData( $res);
+        return $this->respondJson($status,'开盘价格',$res);
+    }

@@ -1,0 +1,40 @@
+1、更改updateall存在脏读的地方，修改成如下格式（自增更新）
+	User::updateAll(
+                ['cash' => new Expression('cash-' . abs($data['money'])),'update_time' => $data['update_time']],
+                ['id' => $data['user_id']]
+            );
+
+2、对买入卖出逻辑进行修改
+3、对用户买卖交易总额进行判断，必须（人民币）达到分数   
+		********************************************************修改返回标的code    
+
+4、首页兑换行情接口
+	bid表：
+	code、title
+	trans_detail表：
+	buy_price/sell_price/count(amount)
+	bid_day_trans表：
+	current_price/close_price(昨日)/open_price(今天)
+	max_price/min_price
+	暂时不传：涨跌、涨幅
+***************************************后台：文章内容不显示/交易标发布有个bug
+
+##############################需要讨论的需求
+涨跌比、涨幅、成本
+
+页面中某些接口需要判断用户是否登录
+
+5、新标购买逻辑
+	判断用户购买该新标的时间是否在标的开始时间和结束时间之间
+	判断用户所买的新标数量应该要小于该标的trans_amount
+	扣掉用户金额
+	在cash_detail中增加一条明细
+	在issue_order中增加一条数据
+	在issue表中将该标的entrust_amount累加用户所传入的需要买的标数量
+	在user_bid_detail表中增加一条记录
+
+
+
+日交易信息需要写入数据库
+
+	

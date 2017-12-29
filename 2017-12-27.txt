@@ -1,0 +1,34 @@
+1、封装data需要的字段
+ 		$data = [
+                user_id,bid_id,entrust_amount,update_time,create_time
+            ]
+
+
+            //1-在issue表中将该标的entrust_amount累加用户所传入的需要买的标数量
+            $sign = Issue::updateAll(
+                ['entrust_amount' => new Exception('entrust_amount+' . abs($data['entrust_amount'])), 'update_time' => $data['update_time']],
+                ['and', ['bid_id' => $data['bid_id']], ['status' => BIssue::$STATUS_ON]]
+            );
+            if ($sign === 0) {throw new ErrorException('issue table data is not update successfully');}
+             //-在user_bid_detail表中增加一条记录
+            $bidDetail = new UserBidDetail();
+            $bidDetail->setAttributes($data); // user_id,bid_id,update_time,create_time
+            $bidDetail->type = BUserBidDetail::$TYPE_ISSUE_ORDER;
+            $bidDetail->relate_table = 'issue';
+            $bidDetail->relate_id = $issueOrderLastId;
+            $init_amount = 0;
+            $userBid = UserBid::find()->where(['user_id' => $data['user_id']])->andWhere(['bid_id' => $data['bid_id']])->select('amount')->one();
+            if ($userBid !== null) { $init_amount = $userBid['amount']; }
+            $bidDetail->init_amount = $init_amount;
+            $bidDetail->amount = abs($data['entrust_amount']);
+            $bidDetail->remark = '新标认购';
+            $bidDetail->status = BUserBidDetail::$STATUS_EFFECT_WAIT;
+            $sign = $bidDetail->save();
+            if (!$sign) { throw new ErrorException('user_bid_detail table data is not inserted successfully'); }
+
+
+新标购买需要输入交易密码、返回bid_id、
+
+交易时段10到22才开始交易，买卖价格在（开盘价）+-3%之间浮动，开盘价等于前一天的收盘价，第一天：标的发行价
+吧remark信息改为type所对应的信息
+updateall需要多加判断
