@@ -1,0 +1,48 @@
+1、完善接口中的成本计算
+ 暂时不用的逻辑
+ 		// 委托中交易
+        $orderArr = TransOrder::find()
+            ->where(['type' => BTransOrder::$TYPE_BUY])
+            ->andWhere(['user_id' => $userId])
+            ->andWhere(['order_status' => BTransOrder::$ORDER_STATUS_ENTRUSTMENT])
+            ->select(['entrust_price','entrust_amount'])
+            ->all();
+        foreach ($orderArr as $key) {
+            $money = bcadd($money, $key['entrust_price'], 2);
+            $amount = bcadd($amount, $key['entrust_amount'], 6);
+        }
+
+        // 购买新标
+        $issueArr = BIssueOrder::find()
+            ->where(['user_id' => $userId])
+            ->andWhere(['bid_id' => $bid])
+            ->andWhere(['status' => BIssueOrder::$STATUS_SUCCESS])
+            ->all();
+        foreach ($issueArr as $key) {
+            $money = bcadd($money, $key['price'], 2);
+            $amount = bcadd($amount, $key['trans_amount'], 6);
+        }
+        var_dump($money);
+        var_dump($amount);exit;
+        if ($amount == 0) {
+            return 0;
+
+        
+        }
+
+        
+
+        $conn = \Yii::$app->db;
+        // 已完成交易
+        $sql = "SELECT sum(gr_trans_detail.price) as done_price,sum(gr_trans_detail.amount) as done_amount  FROM gr_trans_detail"
+        ." LEFT JOIN gr_trans_order ON ( gr_trans_detail.sell_order_id = gr_trans_order.id OR gr_trans_detail.buy_order_id = gr_trans_order.id ) "
+        ." WHERE ( gr_trans_order.user_id = ".$userId." AND gr_trans_order.trans_status != ".BTransDetail::$TRANS_STATUS_NO_TRADING
+        .' and gr_trans_order.bid_id='.$bid
+        .' and gr_trans_order.type='.BTransOrder::$TYPE_BUY.' )';
+        $command = $conn->createCommand($sql);
+        $data = $command->queryAll();
+        if (empty($data[0]['done_amount'])) {
+            return 0;
+        } else {
+            return (bcdiv($data[0]['done_price'], $data[0]['done_amount'], 2));
+        }
