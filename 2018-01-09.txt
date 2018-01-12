@@ -1,0 +1,12 @@
+1、文章管理新建文章去掉html声明标签以及body标签
+	在 tinymce.init({
+                    selector: "#editor_<?php echo $this->context->id; ?>",
+                    language: 'zh_CN',
+                    height: 300,
+                    plugins: [
+                        "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak spellchecker",
+                        "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+                        "table contextmenu directionality emoticons template textcolor fullpage paste textcolor colorpicker textpattern"
+                    ],去掉fullpage
+2、tinymce上传图片---未解决
+3、我的持仓成本修改

@@ -1,0 +1,5 @@
+-对数据库建模进行查看
+& trans_order/trans_detail
++ 该订单交易成功（trans_status），手续费就是trans_order表中的
+++ 反之，则将根据买卖类型在trans_detail表中找buy_order_id或者sell_order_id对应的orderid，找到记录后累加手续费
+# 清算是否可以独立出来做一张表，清算类型是否可以提出来

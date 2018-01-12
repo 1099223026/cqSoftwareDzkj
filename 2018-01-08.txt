@@ -1,0 +1,29 @@
+1、修改委托管理，按照委托时间排序
+2、成交记录，按照成交时间倒序排序
+3、委托管理新增委托中的选项
+4、新标认购增加交易密码的token
+5、实时成交合并相同记录
+	暂时不用的查询：
+	// 子查询
+        // TODO:原生sql语句子查询--将in优化为left join
+        $conn = \Yii::$app->db;
+        // 获得记录总数
+        $top = 'SELECT count(gr_trans_detail.id) FROM gr_trans_detail';
+        $text = " LEFT JOIN gr_trans_order ON ( gr_trans_detail.sell_order_id = gr_trans_order.id OR gr_trans_detail.buy_order_id = gr_trans_order.id )"
+            ." where gr_trans_detail.trans_time>=".$beginTime." and gr_trans_detail.trans_time < ".$endTime
+            ." AND gr_trans_order.bid_id = ".$bid;
+        $sql = $top.$text;
+        $command = $conn->createCommand($sql);
+        $count = $command->queryAll();
+        $data['count'] = intval($count[0]['count(gr_trans_detail.id)']);
+        if ($data['count'] === 0) {
+            return null;
+        }
+
+        $top = 'SELECT * FROM gr_trans_detail';
+        $text .= " limit ".$left.", ".$right.";";
+        $sql = $top.$text;
+        $command = $conn->createCommand($sql);
+        $data['list'] = $command->queryAll();
+
+6、我的委托显示所有状态（4种）的订单
