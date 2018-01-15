@@ -1,0 +1,6 @@
+1、后台货币列表curd
+2、交易标发布curd
+3、gii修改controller生成的create成功后跳转地址到index
+	gii点击标题排序是通过controller里面的index来实现的，只要不设置根据什么排序都可以
+4、已经删除了后台以往的bid相关的controller、model、bmodel、searchmodel、view
+# 隐藏交易标发布中的交易类型、清算类型字段，并且前台页面不显示
