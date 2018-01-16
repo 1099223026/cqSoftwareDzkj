@@ -1,0 +1,22 @@
+- 修改后台标显示为name字段（大写）而不是code字段
+
+- 隐藏后台标的清算类型、交易类型
+
+- 标发布增加yii验证规则
++ 交易货币不能等于基准货币
++ 数据库中存在了grt->ltc 那么便不可以反推ltc->grt
++ 自定义rules增加规则（自定义函数）
+	['exchange_currency_id', function($attribute){
+                $res = BBid::find()
+                    ->where(['and', ['exchange_currency_id' => $this->exchange_currency_id, 'base_currency_id' => $this->base_currency_id]])
+                    ->orWhere(['and', ['exchange_currency_id' => $this->base_currency_id, 'base_currency_id' => $this->exchange_currency_id]])
+                    ->one();
+                if (!empty($res)) {
+                    $this->addError($attribute,'该交易（基准）货币所对应的基准（交易）货币已存在');
+                }
+            }, 'skipOnEmpty' => false, 'skipOnError' => false],
+    默认情况下，如果关联的属性接收到空输入，或者已经失败了一些验证规则，那么内联验证器就不会被应用。如果您想确保始终应用一个规则，那么可以在规则声明中配置skipOnEmpty和/或skipOnError属性为false。
++ 英文官网地址：http://www.yiiframework.com/doc-2.0/guide-input-validation.html#inline-validators
+
+- 用户实名认证逻辑及后台页面实现    
++ 审核失败后弹出模态框让管理员输入信息
