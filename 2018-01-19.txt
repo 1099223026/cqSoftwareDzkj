@@ -1,0 +1,5 @@
+- 接口
++ 创建用户中心-个人持仓
+ SELECT `bid_id`, `price`, `trans_time` FROM `select distinct` `bid_id`, `price`, trans_time from gr_trans_detail where bid_id in (1, `8`, `10) order by trans_time desc` `f` GROUP BY `bid_id`
+
+ 用户总金额、可用金额计算接口存在问题，下周需要修改
