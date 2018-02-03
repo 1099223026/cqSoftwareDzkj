@@ -1,0 +1,55 @@
+- 修改个人持仓列表接口
+- 修改用户金额接口
+- 各个bid接口加上条件判断
+- 提笔地址增加删除操作
+- 交易标对接口修改
+	 /**
+     * @return string
+     * info: 详情页-交易标对列表
+     */
+    public function actionBidPair()
+    {
+        $bidArr = BBid::find()
+            ->where(['<>', 'status', BBid::$STATUS_OFF])
+            ->select('id, base_currency_id, exchange_currency_id, min_price, price_precision, min_amount, amount_precision')
+            ->asArray()
+            ->all();
+        if (empty($bidArr)) {
+            $respondContent['list'] = [];
+            return $this->respondJson(0, '获取成功', $respondContent);
+        }
+
+        // 根据base_currency_id分组
+        $bidArrIndex = ArrayHelper::index($bidArr, null, 'base_currency_id');
+
+        $currencyArr = BCurrency::find()->where(['status' => BCurrency::$CURRENCY_STATUS_ON])->select('id, name')->asArray()->all();
+        // 重建索引
+        $currencyArrIndex = ArrayHelper::index($currencyArr, 'id');
+
+        $listOut = [];
+        foreach ($bidArrIndex as $key) {
+            foreach ($key as $val) {
+                // todo：这里报错是因为bid和currency的status不对
+                $listOut[$currencyArrIndex[$key[0]['base_currency_id']]['name']][] = [
+                    'bid_id' => $val['id'],
+                    // todo：传bid_id只是前台传值方便，如果真要提高效率，还是要改成另外两个id(基准/货币)
+//                    'base_currency_id' => $val['base_currency_id'],
+//                    'exchange_currency_id' => $val['exchange_currency_id'],
+                    'exchange_currency_str' => $currencyArrIndex[$val['exchange_currency_id']]['name'],
+                    'base_currency_str' => $currencyArrIndex[$key[0]['base_currency_id']]['name'],
+                    'min_price' => $val['min_price'],
+                    'price_precision' => $val['price_precision'],
+                    'min_amount' => $val['min_amount'],
+                    'amount_precision' => $val['amount_precision']
+                ];
+            }
+        }
+
+        $respondContent['list'] = $listOut;
+        return $this->respondJson(0, '获取成功', $respondContent);
+    }
+
+- 前台买卖接口增加验证规则
+
+- 买卖测试	
+- 明日增加手续费（买卖）    
