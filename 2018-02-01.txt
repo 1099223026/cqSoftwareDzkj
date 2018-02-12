@@ -15,7 +15,7 @@
 	[{"id":1, "value":300},{"id":2, "value":600},{"id":3, "value":1800},{"id":4, "value":3600},{"id":5, "value":7200},{"id":6, "value":86400},{"id":7, "value":432000},{"id":8, "value":604800}]
 	[["id":1, "value":300],["id":2, "value":600],["id":3, "value":1800],["id":4, "value":3600],["id":5, "value":7200],["id":6, "value":86400],["id":7, "value":432000],["id":8, "value":604800]]
 	[
-		{"5min":300,"10min":600,"30min":1800,"1hour":3600,"4hour":7200,"1day":86400,"5day":432000,"1week":604800},
+		{"1min":60,"5min":300,"10min":600,"30min":1800,"1hour":3600,"4hour":7200,"1day":86400,"5day":432000,"1week":604800},
 	]
 	+ 分时sql:
 	SELECT COUNT(*),SUM(amount) AS amount,price,MIN(price),MAX(price),FROM_UNIXTIME(trans_time, `trans_time`-`trans_time`% (60*5)) AS trans_time

@@ -1,0 +1,21 @@
+// 获取交易时间段--日开收盘
+        if ($bidRes->trans_type == BBid::$TRANS_TYPE_DAY) {
+            $begin = Setting::find()->where(['`key`' => 'trans_day_begin_time'])->limit(1)->one();
+            $end = Setting::find()->where(['`key`' => 'trans_day_end_time'])->limit(1)->one();
+
+            $beginTime = strtotime(date('Y-m-d ').$begin['value']);
+            $endTime = strtotime(date('Y-m-d ').$end['value']);
+            $today = date('Ymd');
+            $time = time();
+
+            if ($beginTime > $endTime) {
+                if ($time <= strtotime($today.$end['value'])) {
+                    $beginTime -= 86400;
+                } elseif ($time > strtotime($today.$end['value'])) {
+                    $endTime += 86400;
+                }
+            }
+            $find = $find->andWhere(['and', ['>=', 'trans_time', $beginTime], ['<=', 'trans_time', $endTime]]);
+        } elseif ($bidRes->trans_type == BBid::$TRANS_TYPE_HOURS) {
+            ;
+        }

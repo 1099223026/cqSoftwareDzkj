@@ -1,0 +1,117 @@
+- 封装随机插入函数
+
+    /**
+     * @param $array 最终数组
+     * @param $position 插入位置
+     * @param $insert_array 插入的具体数组
+     */
+    public static function array_insert(&$array, $position, $insert_array) {
+        $first_array = array_splice($array, 0, $position);
+        $array = array_merge($first_array, $insert_array, $array);
+    }
+
+- k线图对大于当前时段的数据进行判断    
+- k线图显示当天运营时段的数据，中间不存在断层，直接和上一天的数据进行拼合
+- k线图预留算法
+/**
+     * @param $timeShare
+     * @param $bid
+     * @param $page
+     * @param $pageSize
+     * @return array|null|\yii\db\ActiveRecord[]
+     * info : K线图(日期、开盘价、收盘价、最低价、最高价、成交量)-该时段以前
+     */
+    public static function getKLineTable($timeShare, $bid, $page, $pageSize)
+    {
+        $num = ($page - 1) * $pageSize;
+        // 日期、最低价、最高价、成交量
+        $maxMinArr = BTransDetail::find()
+            ->where(['bid_id' => $bid])
+            ->select('id,(`trans_time`-`trans_time`% '.$timeShare.') AS time_stamp,SUM(amount) AS trans_amount,price as trans_price,MIN(price) as min_price,MAX(price) as max_price,FROM_UNIXTIME(`trans_time`-`trans_time`% ('.$timeShare.')) AS trans_time')
+            ->groupBy('FROM_UNIXTIME(`trans_time`-`trans_time`% ('.$timeShare.'))')
+            ->orderBy('trans_time DESC')
+            ->limit($pageSize)
+            ->offset($num)
+            ->asArray()
+            ->all();
+        if (empty($maxMinArr)) {
+            return null;
+        }
+        // 日期、开盘价
+        $openPriceArr = BTransDetail::find()
+            ->where(['bid_id' => $bid])
+            ->select('id,price,(`trans_time`-`trans_time`% '.$timeShare.') AS time_stamp,FROM_UNIXTIME(MIN(trans_time)) AS first_trans_time,FROM_UNIXTIME(`trans_time`-`trans_time`% ('.$timeShare.')) AS trans_time ')
+            ->groupBy('FROM_UNIXTIME(`trans_time`-`trans_time`%('.$timeShare.'))')
+            ->limit($pageSize)
+            ->offset($num)
+            ->asArray()
+            ->all();
+        // 日期、收盘价
+        $closePriceArr = BTransDetail::find()
+            ->where(['bid_id' => $bid])
+            ->select('id,price,(`trans_time`-`trans_time`% '.$timeShare.') AS time_stamp,FROM_UNIXTIME(MAX(trans_time)) AS last_trans_time,FROM_UNIXTIME(`trans_time`-`trans_time`% ('.$timeShare.')) AS trans_time ')
+            ->groupBy('FROM_UNIXTIME(`trans_time`-`trans_time`% ('.$timeShare.'))')
+            ->limit($pageSize)
+            ->offset($num)
+            ->asArray()
+            ->all();
+        // 重建索引
+        $openPriceIndex = ArrayHelper::index($openPriceArr,'time_stamp');
+        $closePriceIndex = ArrayHelper::index($closePriceArr,'time_stamp');
+
+        // 当前时段
+        $time = strtotime(date('Ymd H:i:s'));
+        $time = $time - $time % $timeShare;
+
+        // 限制时段
+        $begin = Setting::find()->where(['`key`' => 'trans_day_begin_time'])->limit(1)->one();
+        $end = Setting::find()->where(['`key`' => 'trans_day_end_time'])->limit(1)->one();
+        $beginHours = date('H', strtotime($begin->getAttribute('value')));
+        $endHours = date('H', strtotime($end->getAttribute('value')));
+        var_dump($beginHours);var_dump($endHours);
+
+        // 将开盘价、收盘价根据时间戳存入主数组
+        $len = count($maxMinArr);
+        for ($i = 0, $j = 0; $i < $len; $i++) {
+            // 装载开盘价/收盘价
+            if (array_key_exists($maxMinArr[$i + $j]['time_stamp'], $openPriceIndex) === true) {
+                $maxMinArr[$i + $j]['open_price'] = $openPriceIndex[$maxMinArr[$i + $j]['time_stamp']]['price'];
+                $maxMinArr[$i + $j]['open_price_time'] = $openPriceIndex[$maxMinArr[$i + $j]['time_stamp']]['trans_time'];
+            }
+            if (array_key_exists($maxMinArr[$i + $j]['time_stamp'], $closePriceIndex) === true) {
+                $maxMinArr[$i + $j]['close_price'] = $closePriceIndex[$maxMinArr[$i + $j]['time_stamp']]['price'];
+                $maxMinArr[$i + $j]['close_price_time'] = $openPriceIndex[$maxMinArr[$i + $j]['time_stamp']]['trans_time'];
+            }
+            // 数据中存在比当前时间更大的时间（异常）
+            if ($maxMinArr[$i + $j]['time_stamp'] > $time) {
+                continue;
+            }
+            // 时间不连续，补零
+            while ($maxMinArr[$i + $j]['time_stamp'] != $time) {
+                $timeHours = date('H',$time);
+                // 分是刻度＜1day 在开收盘时段内
+                if (($timeShare < 86400 && $beginHours <= $timeHours && $timeHours <= $endHours) || $timeShare >= 86400) {
+                    // 将数组清空
+                    $temporaryArr = [];
+                    $temporaryArr[] = [
+                        'trans_amount' => 0,
+                        'min_price' => $maxMinArr[$i + $j]['min_price'],
+                        'max_price' => $maxMinArr[$i + $j]['max_price'],
+                        'open_price' => $maxMinArr[$i + $j]['open_price'],
+                        'close_price' => $maxMinArr[$i + $j]['close_price'],
+                        'time_stamp' => $time,
+                        'trans_time' => date('Y-m-d H:i:s', $time)
+                    ];
+                    array_splice($maxMinArr, $j + $i, 0, $temporaryArr);
+                    $j++;
+                }
+                // 下一时间
+                $time -= $timeShare;
+            }
+            $time -= $timeShare;
+        }
+
+        return $maxMinArr;
+    }
+- 将bc类别函数替换为round函数，做四舍五入
+- 梳理清算

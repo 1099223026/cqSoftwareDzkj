@@ -1,0 +1,60 @@
+接口-成交查询手续费修改并且加上单位
+所有接口-将name兼容换成code
+
+    /**
+     * @param $userId
+     * @param $page
+     * @param $pageSize
+     * @param $bid
+     * info : 详情-我的委托 用户所有订单（成交、部分成交等）
+     */
+    public static function getOrderAll($userId, $page, $pageSize, $bid)
+    {
+        // trans_status != 部分交易(完整的)
+        $fullCount = BTransOrder::find()
+            ->where(['<>', 'trans_status', BTransOrder::$TRANS_STATUS_PART_TRADING_OK])
+            ->andWhere(['user_id' => $userId, 'bid_id' => $bid])
+            ->count();
+        $orderFull  = BTransOrder::find()
+            ->where(['<>', 'trans_status', BTransOrder::$TRANS_STATUS_PART_TRADING_OK])
+            ->andWhere(['user_id' => $userId, 'bid_id' => $bid])
+            ->asArray()
+            ->all();
+
+        // trans_status == 部分交易（不完整）
+        $partCount = BTransOrder::find()
+            ->where(['trans_status' => BTransOrder::$TRANS_STATUS_PART_TRADING_OK])
+            ->andWhere(['user_id' => $userId, 'bid_id' => $bid])
+            ->count();
+        $orderPart = BTransOrder::find()
+            ->where(['trans_status' => BTransOrder::$TRANS_STATUS_PART_TRADING_OK])
+            ->andWhere(['user_id' => $userId, 'bid_id' => $bid])
+            ->asArray()
+            ->all();
+
+        // 结果数组
+        $resArr = [];
+//var_dump($orderPart);
+        // 部分交易 找到明细表中的记录
+        foreach ($orderPart as &$order) {
+//            // 该订单状态为撤销
+//            if ($order['order_status'] == BTransOrder::$ORDER_STATUS_CANCELLATION || $order['order_status'] == BTransOrder::$ORDER_STATUS_CANCELLATION_OFF) {
+//                continue;
+//            }
+            var_dump($order);
+            if ($order['type'] == BTransOrder::$TYPE_BUY) {
+                // 买
+                // todo:用户自己买卖同一笔单子，默认只读取买的
+                // 部分交易订单id 的所有成交明细
+                $detailArr = BTransDetail::find()->where(['buy_order_id' => $order['id'], 'bid_id' => $bid])->asArray()->all();
+                // 装进结果数组
+                $resArr = array_merge_recursive($resArr, $detailArr);
+                // 计算剩余需要委托的信息
+
+var_dump($resArr);exit;
+            } elseif ($order['type'] == BTransOrder::$TYPE_SELL) {
+                // 卖
+            }
+        }
+
+    }

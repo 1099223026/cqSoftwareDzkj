@@ -1,0 +1,61 @@
+- 后台bid日开收盘、实时清算
+- 接口-用户资产优化
+- 接口-k线周期图按照时间的升序返回数据
+- 接口-用户中心-成交查询原生sql优化
+- 接口-文章中关于我们增加用户协议标题
+- postman无用接口备份
+- 实名认证失败审核
+
+public static function transQuery($userId, $page, $pageSize, $bid = 0, $type = 0)
+    {
+        if (empty($userId)) {
+            return null;
+        }
+
+        // 获得记录总数
+        $find = BTransDetail::find()
+            ->from(BTransDetail::tableName().' A')
+            ->innerJoin(BTransOrder::tableName().' B',
+                'A.sell_order_id = B.id OR A.buy_order_id = B.id'
+            )
+            ->where(['B.user_id' => $userId])
+            ->andWhere(['<>', 'B.trans_status', BTransDetail::$TRANS_STATUS_NO_TRADING]);
+        if ($bid !== 0) {
+            $find = $find->andWhere(['B.bid_id' => $bid]);
+        }
+        if ($type !== 0) {
+            $find = $find->andWhere(['B.type' => $type]);
+        }
+
+        $data['count'] = intval($find->count());
+        if ($data['count'] === 0) {
+            return null;
+        }
+
+        // 获取记录
+        // 获得记录总数
+        $find = BTransDetail::find()
+            ->select('*,A.id as aaa,B.id as bbb')
+            ->from(BTransDetail::tableName().' A')
+            ->innerJoin(BTransOrder::tableName().' B',
+                'A.sell_order_id = B.id OR A.buy_order_id = B.id'
+            )
+            ->where(['B.user_id' => $userId])
+            ->andWhere(['<>', 'B.trans_status', BTransDetail::$TRANS_STATUS_NO_TRADING]);
+        if ($bid !== 0) {
+            $find = $find->andWhere(['B.bid_id' => $bid]);
+        }
+        if ($type !== 0) {
+            $find = $find->andWhere(['B.type' => $type]);
+        }
+        $data['list'] = $find->orderBy('A.trans_time desc')
+            ->limit($pageSize)
+            ->offset(($page - 1) * $pageSize)
+            ->asArray()
+            ->all();
+//var_dump($data);exit;
+        return $data;
+    }
+
+    成交查询手续费修改并且加上单位
+    所有接口-将name兼容换成code
