@@ -1,0 +1,26 @@
+- 整理昨天在本地数据库修改的sql打包成文件
+
+- 交易系统后台的属性设置功能（参数化）
+	+ 控件教程：http://tarruda.github.io/bootstrap-datetimepicker/
+
+- 新增绑定邮箱，开关验证功能
+	- 手机、邮箱验证新增数据表
+		+ gr_user_verify_push   用户验证推送
+		+ id
+		+ user_id
+		+ type 
+		+ create_time
+		+ update_time
+
+
+
+
+- 短信、邮箱模板修新增记录
+	+ INSERT INTO `gr_app_v2`.`gr_sms_template` (`name`, `type`, `content`, `outer_template_id`) VALUES ('开关安全验证', '7', '验证码${code}，您正在尝试变更重要信息，请妥善保管账户信息。', 'SMS_108390022');
+	+ INSERT INTO `gr_app_v2`.`gr_email_template` (`name`, `type`, `content`, `outer_template_id`) VALUES ('开关安全验证', '7', '验证码${code}，您正在尝试变更重要信息，请妥善保管账户信息。', 'SMS_108390022');
+
+
+
+
+
+

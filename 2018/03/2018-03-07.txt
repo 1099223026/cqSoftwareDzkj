@@ -1,0 +1,48 @@
+- 提币地址管理step步骤添加token验证，防止不按照step顺序访问
+
+- 用户中心-绑定手机、邮箱step添加token验证
+
+- 基于以太坊开发测试
+	+ 
+	pragma solidity ^0.4.0;
+	contract HelloWorld{
+		uint balance;
+		function update(uint amount) returns (address, uint) {
+			balance += amount;
+			return (msg.sender, balance);
+		}
+	}
+
+	pragma solidity ^0.4.0;
+	contract SimpleStorage {
+    uint storedData;
+
+    function set(uint x) {
+        storedData = x;
+    }
+
+    function get() constant returns (uint) {
+        return storedData;
+    }
+}
+
+// 解密
+        $token = FuncHelper::authCode($visitToken,"DECODE");
+        if (empty($token)) {
+            return $this->respondJson(1, '无权访问该接口');
+        }
+        $tokenArr = json_decode($token);
+        // 是否进行了第一步（验证地址操作）
+        if (!($this->user_id == $tokenArr->user_id && $tokenArr->interface_type == 'withdraw_address' && $tokenArr->step1 == 1)) {
+            return $this->respondJson(1, '无权访问该接口');
+        }
+
+        // 安全验证
+        $returnInfo = $this->elasticSafetyVerify(BSmsAuth::$TYPE_NEW_WITHDRAW_ADDRESS, BEmailAuth::$TYPE_NEW_WITHDRAW_ADDRESS);
+        $respondContent['visit_token'] = '';
+        if ($returnInfo->code === 0) {
+            // 标识已访问该接口
+            $visitStr = '{"user_id":'.$tokenArr->user_id.', "interface_type":'.$tokenArr->interface_type.', "step1":'.$tokenArr->step1.', "step2":1}';
+            // 加密
+            $respondContent['visit_token'] = FuncHelper::authCode($visitStr,"ENCODE", "", 60 * 5);
+        }

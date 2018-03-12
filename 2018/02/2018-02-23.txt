@@ -1,0 +1,18 @@
+- 成交查询sql
+	+ SELECT gr_trans_order.type,gr_trans_order.entrust_price, gr_trans_detail.*  
+	  FROM gr_trans_detail
+	  LEFT JOIN gr_trans_order 
+	  ON ( gr_trans_detail.sell_order_id = gr_trans_order.id OR gr_trans_detail.buy_order_id = gr_trans_order.id ) 
+	  WHERE ( gr_trans_order.user_id = 35 AND gr_trans_order.trans_status != 0 AND gr_trans_order.bid_id = 1 ) 
+	  ORDER BY gr_trans_detail.trans_time DESC
+
+- 干掉bmodel中的现价计算
+
+- 井通钱包梳理(JingTumService)
+	+ 提币：生成订单号-> 新增支付请求记录-> 大钱包提币到用户钱包-> 更新支付请求记录
+	+ 充币：（注：该用户的任何币种都是同一个充币地址）充币地址（激活钱包平台发放最小激活金额）-> 增加用户平台信息-> 资产转移到大钱包
+
+- 发送短信梳理
+	+ 读取短信模版-> 写发送短信日志-> 阿里云发送短信
+
+- 删除 总资产-用户总金额、可用金额计算service方法		

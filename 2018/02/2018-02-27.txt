@@ -1,0 +1,43 @@
+- 权限管理
+	+ 后台对所有人都可以访问的菜单进行配置
+	+ 菜单权限  v
+	- 增删改查权限 v
+		+ 查找/查看权限是基本权限，不做操作
+		+ 增/删/改权限做限制
+
+
+		['class' => 'yii\grid\ActionColumn',
+                'header' => '操作',
+                'template' => $template
+            ],
+
+
+
+            <?php
+            $permissionArr = \common\services\AclService::getInstance()->checkViewOptionPermission(Yii::$app->user->identity->id, basename(dirname(__FILE__)));
+            if ($permissionArr['create'] === true) {
+        ?>
+                <div class=" row" >
+                    <div class="col-sm-12 margin-bottom">
+                        <?php echo Html::a('新增管理员', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+                    </div>
+                </div>
+        <?php
+            }
+
+            // template
+            $template = '';
+            if ($permissionArr['view'] === true) {
+                $template .= ' {view}';
+            }
+            if ($permissionArr['update'] === true) {
+                $template .= ' {update}';
+            }
+            if ($permissionArr['delete'] === true) {
+                $template .= ' {delete}';
+            }
+        ?>
+
+- 本地数据库增加字段，修改记录都要记录一下		
+
+- 角色管理去掉子角色选项中包含自己的选项  v
