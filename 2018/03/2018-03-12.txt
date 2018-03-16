@@ -1,0 +1,45 @@
+- 后台增加提现额度等级限制
+	+ yii中增加了变量的get魔术方法，而不增加set方法，则视为只读变量
+
+- shadowscoks-go cent6_x64 添加多用户访问
+	+ 服务器conf配置文件
+		update:
+		{
+			"server": "0.0.0.0",
+			"local_port":1080,
+			"port_password":
+				{
+					 "port":"password",
+				},
+			"timeout": 600,
+			"method": "aes-256-cfb"
+		}
+
+		init:
+		{
+		    "server":"0.0.0.0",
+		    "server_port":9174,
+		    "local_port":1080,
+		    "password":"xiangguoping.com",
+		    "method":"aes-256-cfb",
+		    "timeout":300
+		}
+	+ 添加iptables配置
+		-A INPUT -p udp -m state --state NEW -m udp --dport 8989 -j ACCEPT
+		-A INPUT -p tcp -m state --state NEW -m tcp --dport 8989 -j ACCEPT
+		
+		-A INPUT -p udp -m state --state NEW -m udp --dport 9001 -j ACCEPT
+		-A INPUT -p tcp -m state --state NEW -m tcp --dport 9001 -j ACCEPT
+		
+		-A INPUT -p udp -m state --state NEW -m udp --dport 9002 -j ACCEPT
+		-A INPUT -p tcp -m state --state NEW -m tcp --dport 9002 -j ACCEPT
+		
+		-A INPUT -p udp -m state --state NEW -m udp --dport 9003 -j ACCEPT
+		-A INPUT -p tcp -m state --state NEW -m tcp --dport 9003 -j ACCEPT
+		
+		-A INPUT -p udp -m state --state NEW -m udp --dport 9004 -j ACCEPT
+		-A INPUT -p tcp -m state --state NEW -m tcp --dport 9004 -j ACCEPT
+
+
+
+
