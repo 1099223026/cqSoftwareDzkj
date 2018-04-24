@@ -1,0 +1,15 @@
+- 交易中心列表接口
+	+ 持有数量-可卖数量
+	+ otc_ad：status=上架
+	+ 交易条件-灰色or其他 给定一个状态
+	+ {"real_name_auth":true, "identity_auth":true, "must_min_trans":5}
+
+
+gr_legal_currency
+gr_merchant
+gr_otc_message
+gr_otc_ad
+gr_otc_order
+gr_user_alipay_account
+gr_user_wxpay_account
+gr_user_relation

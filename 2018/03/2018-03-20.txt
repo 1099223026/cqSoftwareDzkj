@@ -1,0 +1,6 @@
+- 提币操作流程接口完善
+
+- 将邮件模板共同的内容抽成变量，例如：VGUIREN、url地址  ${platform_name}  ${platform_url}  ${platform_team}
+	+ 贵人团队  http://sys.vguiren.com   【VGUIREN】
+	+ email_template模板content内容修改
+	+ 登录成功 修改登陆密码 修改交易密码 通知、

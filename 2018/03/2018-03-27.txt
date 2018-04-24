@@ -1,0 +1,14 @@
+- tradingview研究
+	+ 将bundle.js格式化
+	+ bundle.js---line 578 // 网络请求,可以在此处变更网络请求地址
+
+- k-line接口试开放
+	+ config接口
+		+ 分辨率 '1', '5', '10', '30', '60', '240', '1D', '5D', '1W'
+	+ symbolInfo接口
+		+ 修改bundle.js---line 278 "symbol_info" 修改为"symbol-info"
+	+ 。。。
+	+ history接口（k线图数据）
+		+ http://h5.gr_app.local/k-line/history?symbol=AAPL&resolution=240&from=1522071699&to=1522215699
+	+ 底层源码重要注释：###	
+

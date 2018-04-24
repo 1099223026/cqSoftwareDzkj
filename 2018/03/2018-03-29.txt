@@ -1,0 +1,7 @@
+- tradingview研究
+- 剩余问题
+	+ 获取不同标的数据 已解决
+	+ 报错：time order violation, prev: Thu, 29 Mar 2018 02:30:00 GMT, cur: Wed, 28 Mar 2018 16:30:00 GMT 已解决
+	+ 图表缩放比例  已解决
+	+ 蜡烛线与成交量分栏显示 已解决   disabled_features: ["volume_force_overlay"],
+	+ 蜡烛线红色显示 已解决

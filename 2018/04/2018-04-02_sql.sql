@@ -1,0 +1,1 @@
+INSERT INTO `gr_app_v2`.`gr_setting` (`key`, `value`, `group`, `remark`) VALUES ('time_share_trading', '{\"1\":60,\"5\":300,\"10\":600,\"30\":1800,\"60\":3600,\"240\":14400,\"1D\":86400,\"5D\":432000,\"1W\":604800}', '6', 'tradingview-分时刻度（分辨率）');
